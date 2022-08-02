@@ -27,7 +27,9 @@ internal class BookRepository(
 
     fun getBookPagingList(query: String) =
         Pager(
-            config = PagingConfig(pageSize = NETWORK_PAGE_SIZE)
+            config = PagingConfig(
+                pageSize = NETWORK_PAGE_SIZE
+            )
         ) { BookSearchPagingSource(bookApi, query) }
 
     suspend fun getBookDetail(isbn: String): BookDetail = withContext(Dispatchers.IO) {

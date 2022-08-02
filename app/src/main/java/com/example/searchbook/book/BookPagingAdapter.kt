@@ -18,7 +18,8 @@ internal class BookPagingAdapter(
     private val listener: SearchBookListener
 ) : PagingDataAdapter<BookUiModel, BookVH>(object : DiffUtil.ItemCallback<BookUiModel>() {
     override fun areItemsTheSame(oldItem: BookUiModel, newItem: BookUiModel): Boolean {
-        if (oldItem is BookUiModel.Book && newItem is BookUiModel.Book) return oldItem.isbn == newItem.isbn
+        if (oldItem is BookUiModel.Header && newItem is BookUiModel.Header) return true
+        else if (oldItem is BookUiModel.Book && newItem is BookUiModel.Book) return oldItem.isbn == newItem.isbn
         else {
             return oldItem == newItem
         }
@@ -79,34 +80,33 @@ class BookSearchBarVH(
 ) : BookVH(binding.root) {
     override fun bind(item: BookUiModel) {
         val model = item as BookUiModel.Header
-        binding.etSearch.setText(model.query)
-        binding.etSearch.addTextChangedListener(
-            object : TextWatcher {
-                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
-                override fun beforeTextChanged(
-                    s: CharSequence,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {
-                }
+        with(binding.etSearch) {
+            setText(model.query)
+            setSelection(model.query.length)
+            addTextChangedListener(
+                object : TextWatcher {
+                    private var timer: Timer? = null
+                    override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                        if (timer != null) timer?.cancel()
+                    }
 
-                private var timer = Timer()
-                private val DELAY: Long = 1000 // Milliseconds
-                override fun afterTextChanged(s: Editable) {
-                    timer.cancel()
-                    timer = Timer()
-                    timer.schedule(
-                        object : TimerTask() {
-                            override fun run() {
-                                listener.onSearch(s.toString().trim())
-                            }
-                        },
-                        DELAY
-                    )
+                    override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+                    private val DELAY: Long = 1000 // Milliseconds
+                    override fun afterTextChanged(s: Editable) {
+                        timer = Timer()
+                        timer?.schedule(
+                            object : TimerTask() {
+                                override fun run() {
+                                    val query = s.toString().trim()
+                                    listener.onSearch(query)
+                                }
+                            },
+                            DELAY
+                        )
+                    }
                 }
-            }
-        )
+            )
+        }
     }
 }
 

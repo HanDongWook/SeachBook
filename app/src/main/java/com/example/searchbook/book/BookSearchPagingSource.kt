@@ -1,6 +1,5 @@
 package com.example.searchbook.book
 
-import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.searchbook.api.BookAPI
@@ -31,10 +30,9 @@ internal class BookSearchPagingSource(
             val position = params.key ?: STARTING_PAGE_INDEX
 
             val response = bookAPI.getBookList(query)
-            Log.d("test", "book list api response: $response")
-            val result: List<BookUiModel> = response.list.map { BookResponse.of(it) }
-            val newList = header.plus(result)
-            Log.d("test", "newList : $newList")
+
+            val bookList: List<BookUiModel> = response.list.map { BookResponse.of(it) }
+            val newList = header.plus(bookList)
 
             return LoadResult.Page(
                 data = newList,

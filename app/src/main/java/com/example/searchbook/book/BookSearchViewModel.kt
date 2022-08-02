@@ -1,6 +1,5 @@
 package com.example.searchbook.book
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.switchMap
@@ -29,8 +28,9 @@ internal class BookSearchViewModel(
     }
 
     fun searchBook(query: String) {
-        Log.d("test", "BookSearchViewModel edit text searchBook : $query ")
-        searchBookQuery.postValue(query)
+        if (searchBookQuery.value != query) {
+            searchBookQuery.postValue(query)
+        }
     }
 
     fun onBookClick(isbn: Long) {
