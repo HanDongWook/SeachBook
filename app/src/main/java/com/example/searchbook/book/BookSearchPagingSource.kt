@@ -1,5 +1,6 @@
 package com.example.searchbook.book
 
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.searchbook.api.BookAPI
@@ -12,8 +13,11 @@ internal class BookSearchPagingSource(
     private val bookAPI: BookAPI,
     private val query: String
 ) : PagingSource<Int, BookUiModel>() {
+    private var start = START_ITEM_INDEX
+
     companion object {
-        const val STARTING_PAGE_INDEX = 0
+        private const val START_ITEM_INDEX = 1
+        private const val MAX_ITEM_INDEX = 991
     }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, BookUiModel> {
@@ -27,17 +31,20 @@ internal class BookSearchPagingSource(
                 )
             }
 
-            val position = params.key ?: STARTING_PAGE_INDEX
+            start = params.key ?: 1
 
-            val response = bookAPI.getBookList(query)
-
+            val response = bookAPI.getBookList(query = query, start = start)
+            Log.d("test", "start : $start success response : ${response.list.size}")
             val bookList: List<BookUiModel> = response.list.map { BookResponse.of(it) }
-            val newList = header.plus(bookList)
+
+            val newList = if (start == 1) header.plus(bookList) else bookList
+
+            val nextKey = if ((start + response.list.size) < MAX_ITEM_INDEX) start + response.list.size else MAX_ITEM_INDEX
 
             return LoadResult.Page(
                 data = newList,
-                prevKey = if (position == STARTING_PAGE_INDEX) null else position - 1,
-                nextKey = null
+                prevKey = null,
+                nextKey = nextKey
             )
         } catch (e: IOException) {
             LoadResult.Error(e)
