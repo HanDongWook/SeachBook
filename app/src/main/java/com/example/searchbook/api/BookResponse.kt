@@ -3,7 +3,7 @@ package com.example.searchbook.api
 import android.os.Parcelable
 import com.example.searchbook.domain.BookUiModel
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 data class BooksResponse(
     @SerializedName(value = "items")
@@ -18,14 +18,17 @@ data class BookResponse(
     @SerializedName(value = "author")
     val author: String,
 
-    @SerializedName(value = "price")
-    val price: Int,
+    @SerializedName(value = "discount")
+    val discount: Int,
 
     @SerializedName(value = "publisher")
     val publisher: String,
 
     @SerializedName(value = "isbn")
     val isbn: Long,
+
+    @SerializedName(value = "image")
+    val image: String,
 
     @SerializedName(value = "pubdate")
     val pubdate: String,
@@ -36,9 +39,14 @@ data class BookResponse(
     companion object {
         fun of(res: BookResponse): BookUiModel.Book {
             return BookUiModel.Book(
-                res.isbn,
-                res.title,
-                res.author
+                isbn = res.isbn,
+                title = res.title,
+                author = res.author,
+                image = res.image,
+                discount = res.discount.toString(),
+                publisher = res.publisher,
+                pubdate = res.pubdate,
+                description = res.description
             )
         }
     }

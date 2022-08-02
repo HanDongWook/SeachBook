@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.example.searchbook.R
 import com.example.searchbook.databinding.ViewholderPagingBookItemBinding
 import com.example.searchbook.databinding.ViewholderSearchBarBinding
 import com.example.searchbook.domain.BookUiModel
@@ -75,7 +76,7 @@ abstract class BookVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
 }
 
 class BookSearchBarVH(
-    val binding: ViewholderSearchBarBinding,
+    private val binding: ViewholderSearchBarBinding,
     val listener: SearchBookListener
 ) : BookVH(binding.root) {
     override fun bind(item: BookUiModel) {
@@ -86,14 +87,13 @@ class BookSearchBarVH(
             addTextChangedListener(
                 object : TextWatcher {
                     private var timer: Timer? = null
-                    override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                        if (timer != null) timer?.cancel()
-                    }
-
+                    override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
                     override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+
                     private val DELAY: Long = 1000 // Milliseconds
                     override fun afterTextChanged(s: Editable) {
                         timer = Timer()
+                        timer?.cancel()
                         timer?.schedule(
                             object : TimerTask() {
                                 override fun run() {
@@ -118,13 +118,13 @@ class BookListItemVH(
         val book = item as BookUiModel.Book
         with(binding) {
             title.text = book.title
-            author.text = "${book.author} 지음"
-            itemView.setOnClickListener { listener.onClick(book.isbn) }
+            author.text = itemView.resources.getString(R.string.written_by, book.author)
+            itemView.setOnClickListener { listener.onClick(book) }
         }
     }
 }
 
 interface SearchBookListener {
     fun onSearch(query: String)
-    fun onClick(isbn: Long)
+    fun onClick(book: BookUiModel.Book)
 }

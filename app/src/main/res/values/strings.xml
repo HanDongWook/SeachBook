@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">SearchBook</string>
+    <string name="isbn">ISBN: %s</string>
+    <string name="title">제목: %s</string>
+    <string name="author">저자: %s</string>
+    <string name="written_by">%s 지음</string>
+    <string name="price">가격: %s원</string>
+    <string name="publisher">출판사: %s</string>
+    <string name="pubdate">출판일: %s</string>
 </resources>

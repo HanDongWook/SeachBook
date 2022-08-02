@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.searchbook.databinding.FragmentBookSearchBinding
+import com.example.searchbook.domain.BookUiModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class BookSearchFragment : Fragment() {
@@ -25,8 +26,8 @@ class BookSearchFragment : Fragment() {
                 vm.searchBook(query)
             }
 
-            override fun onClick(isbn: Long) {
-                vm.onBookClick(isbn)
+            override fun onClick(book: BookUiModel.Book) {
+                vm.onBookClick(book)
             }
         })
     }
@@ -69,7 +70,7 @@ class BookSearchFragment : Fragment() {
             when (it) {
                 is BookSearchViewModel.Navigate.BookDetail -> {
                     val action =
-                        BookSearchFragmentDirections.actionBookSearchFragmentToBookDetailFragment(it.isbn)
+                        BookSearchFragmentDirections.actionBookSearchFragmentToBookDetailFragment(it.book)
                     findNavController().navigate(action)
                 }
             }

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
+import com.example.searchbook.domain.BookUiModel
 import com.example.searchbook.domain.GetBookPagingListUseCase
 import com.example.searchbook.utils.SingleLiveEvent
 
@@ -12,7 +13,7 @@ internal class BookSearchViewModel(
     val getBookPagingListUseCase: GetBookPagingListUseCase,
 ) : ViewModel() {
     sealed class Navigate {
-        data class BookDetail(val isbn: Long) : Navigate()
+        data class BookDetail(val book: BookUiModel.Book) : Navigate()
     }
 
     private val searchBookQuery = MutableLiveData<String>()
@@ -33,7 +34,7 @@ internal class BookSearchViewModel(
         }
     }
 
-    fun onBookClick(isbn: Long) {
-        navigate.value = Navigate.BookDetail(isbn)
+    fun onBookClick(book: BookUiModel.Book) {
+        navigate.value = Navigate.BookDetail(book)
     }
 }

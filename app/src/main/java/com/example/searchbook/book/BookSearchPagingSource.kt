@@ -31,7 +31,7 @@ internal class BookSearchPagingSource(
                 )
             }
 
-            start = params.key ?: 1
+            start = params.key ?: START_ITEM_INDEX
 
             val response = bookAPI.getBookList(query = query, start = start)
             Log.d("test", "start : $start success response : ${response.list.size}")
