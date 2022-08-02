@@ -26,7 +26,9 @@ sealed class BookUiModel {
         }
     }
 
-    object Header : BookUiModel()
+    data class Header(
+        val query: String
+    ) : BookUiModel()
 }
 
 @Keep

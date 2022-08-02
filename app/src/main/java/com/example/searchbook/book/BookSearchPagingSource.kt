@@ -19,9 +19,10 @@ internal class BookSearchPagingSource(
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, BookUiModel> {
         return try {
+            val header: List<BookUiModel> = listOf(BookUiModel.Header(query))
             if (query.isBlank()) {
                 return LoadResult.Page(
-                    data = emptyList(),
+                    data = header,
                     prevKey = null,
                     nextKey = null
                 )
@@ -30,10 +31,13 @@ internal class BookSearchPagingSource(
             val position = params.key ?: STARTING_PAGE_INDEX
 
             val response = bookAPI.getBookList(query)
-            val result = response.list.map { BookResponse.of(it) }
-            Log.d("test", "result : $result")
+            Log.d("test", "book list api response: $response")
+            val result: List<BookUiModel> = response.list.map { BookResponse.of(it) }
+            val newList = header.plus(result)
+            Log.d("test", "newList : $newList")
+
             return LoadResult.Page(
-                data = result,
+                data = newList,
                 prevKey = if (position == STARTING_PAGE_INDEX) null else position - 1,
                 nextKey = null
             )

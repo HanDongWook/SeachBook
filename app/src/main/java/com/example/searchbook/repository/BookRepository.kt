@@ -1,6 +1,5 @@
 package com.example.searchbook.repository
 
-import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import com.example.searchbook.api.ApiProvider
@@ -22,14 +21,17 @@ internal class BookRepository(
 ) {
     private val bookApi by lazy { apiProvider.create(BookAPI::class) }
 
+    companion object {
+        const val NETWORK_PAGE_SIZE = 10
+    }
+
     fun getBookPagingList(query: String) =
         Pager(
-            config = PagingConfig(pageSize = 10)
+            config = PagingConfig(pageSize = NETWORK_PAGE_SIZE)
         ) { BookSearchPagingSource(bookApi, query) }
 
     suspend fun getBookDetail(isbn: String): BookDetail = withContext(Dispatchers.IO) {
         val d_isbn = URLEncoder.encode(isbn, "UTF-8")
-        Log.d("test", "d_isbn : $d_isbn")
         val apiURL = "https://openapi.naver.com/v1/search/book_adv.xml?d_isbn=$d_isbn"
         val url = URL(apiURL)
         val huc: HttpURLConnection = url.openConnection() as HttpURLConnection

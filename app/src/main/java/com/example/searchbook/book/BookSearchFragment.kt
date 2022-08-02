@@ -31,6 +31,27 @@ class BookSearchFragment : Fragment() {
         })
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        pagingAdatper.addLoadStateListener { combinedLoadStates ->
+            if (combinedLoadStates.source.refresh is LoadState.NotLoading
+                && combinedLoadStates.append.endOfPaginationReached
+                && pagingAdatper.itemCount < 1
+            ) {
+                //is Empty
+            } else {
+                //is not empty
+                Log.d("test", "pagingAdatper.itemCount : ${pagingAdatper.itemCount}")
+            }
+        }
+
+        _binding = FragmentBookSearchBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.rvBookList.apply {
@@ -39,23 +60,10 @@ class BookSearchFragment : Fragment() {
                 LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         }
 
-        pagingAdatper.addLoadStateListener { combinedLoadStates ->
-            if (combinedLoadStates.source.refresh is LoadState.NotLoading
-                && combinedLoadStates.append.endOfPaginationReached
-                && pagingAdatper.itemCount < 1
-            ) {
-                Log.d("test", "empty : ${pagingAdatper.itemCount}")
-            } else {
-                Log.d("test", "adapter.itemCount : ${pagingAdatper.itemCount}")
-            }
+        vm.pagingList.observe(viewLifecycleOwner) { pagingData ->
+            Log.d("test", "BookSearchFragment pagingdata : $pagingData ")
+            pagingAdatper.submitData(viewLifecycleOwner.lifecycle, pagingData)
         }
-
-        vm.pagingList.observe(viewLifecycleOwner) {
-            Log.d("test", "BookSearchFragment pagingdata : $it ")
-            pagingAdatper.submitData(viewLifecycleOwner.lifecycle, it)
-        }
-
-        vm.searchBook("")
 
         vm.navigate.observe(viewLifecycleOwner) {
             when (it) {
@@ -66,15 +74,6 @@ class BookSearchFragment : Fragment() {
                 }
             }
         }
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentBookSearchBinding.inflate(inflater, container, false)
-        return binding.root
     }
 
     override fun onDestroyView() {

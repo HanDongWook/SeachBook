@@ -67,11 +67,6 @@ internal class BookPagingAdapter(
     override fun onBindViewHolder(holder: BookVH, position: Int) {
         getItem(position)?.let { holder.bind(it) }
     }
-
-    override fun getItemCount(): Int {
-        return super.getItemCount()
-    }
-
 }
 
 abstract class BookVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -83,6 +78,8 @@ class BookSearchBarVH(
     val listener: SearchBookListener
 ) : BookVH(binding.root) {
     override fun bind(item: BookUiModel) {
+        val model = item as BookUiModel.Header
+        binding.etSearch.setText(model.query)
         binding.etSearch.addTextChangedListener(
             object : TextWatcher {
                 override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
