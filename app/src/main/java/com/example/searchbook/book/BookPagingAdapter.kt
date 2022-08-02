@@ -9,6 +9,7 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.searchbook.R
+import com.example.searchbook.databinding.ViewholderDateSeparatorBinding
 import com.example.searchbook.databinding.ViewholderPagingBookItemBinding
 import com.example.searchbook.databinding.ViewholderSearchBarBinding
 import com.example.searchbook.domain.BookUiModel
@@ -19,7 +20,7 @@ internal class BookPagingAdapter(
     private val listener: SearchBookListener
 ) : PagingDataAdapter<BookUiModel, BookVH>(object : DiffUtil.ItemCallback<BookUiModel>() {
     override fun areItemsTheSame(oldItem: BookUiModel, newItem: BookUiModel): Boolean {
-        if (oldItem is BookUiModel.Header && newItem is BookUiModel.Header) return true
+        if (oldItem is BookUiModel.SearchBar && newItem is BookUiModel.SearchBar) return true
         else if (oldItem is BookUiModel.Book && newItem is BookUiModel.Book) return oldItem.isbn == newItem.isbn
         else {
             return oldItem == newItem
@@ -34,12 +35,14 @@ internal class BookPagingAdapter(
     companion object {
         const val VIEW_TYPE_SEARCH_BAR = 0
         const val VIEW_TYPE_ITEM = 1
+        const val VIEW_TYPE_DATE_SEPARATOR = 2
     }
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
-            is BookUiModel.Header -> VIEW_TYPE_SEARCH_BAR
+            is BookUiModel.SearchBar -> VIEW_TYPE_SEARCH_BAR
             is BookUiModel.Book -> VIEW_TYPE_ITEM
+            is BookUiModel.DateSeparator -> VIEW_TYPE_DATE_SEPARATOR
             else -> throw IllegalStateException("Unknown view")
         }
     }
@@ -53,6 +56,14 @@ internal class BookPagingAdapter(
                     false
                 )
                 return BookSearchBarVH(binding, listener)
+            }
+            VIEW_TYPE_DATE_SEPARATOR -> {
+                val binding = ViewholderDateSeparatorBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+                return BookDateSeparatorVH(binding)
             }
             VIEW_TYPE_ITEM -> {
                 val binding = ViewholderPagingBookItemBinding.inflate(
@@ -80,7 +91,7 @@ class BookSearchBarVH(
     val listener: SearchBookListener
 ) : BookVH(binding.root) {
     override fun bind(item: BookUiModel) {
-        val model = item as BookUiModel.Header
+        val model = item as BookUiModel.SearchBar
         with(binding.etSearch) {
             setText(model.query)
             setSelection(model.query.length)
@@ -92,8 +103,8 @@ class BookSearchBarVH(
 
                     private val DELAY: Long = 1000 // Milliseconds
                     override fun afterTextChanged(s: Editable) {
-                        timer = Timer()
                         timer?.cancel()
+                        timer = Timer()
                         timer?.schedule(
                             object : TimerTask() {
                                 override fun run() {
@@ -120,6 +131,17 @@ class BookListItemVH(
             title.text = book.title
             author.text = itemView.resources.getString(R.string.written_by, book.author)
             itemView.setOnClickListener { listener.onClick(book) }
+        }
+    }
+}
+
+class BookDateSeparatorVH(
+    private val binding: ViewholderDateSeparatorBinding
+) : BookVH(binding.root) {
+    override fun bind(item: BookUiModel) {
+        val model = item as BookUiModel.DateSeparator
+        with(binding) {
+            date.text = itemView.resources.getString(R.string.year, model.date)
         }
     }
 }

@@ -7,6 +7,7 @@ interface BookAPI {
     @GET("v1/search/book.json")
     suspend fun getBookList(
         @Query("query") query: String,
-        @Query("start") start: Int
+        @Query("start") start: Int,
+        @Query("sort") sort: String = "sim"
     ): BooksResponse
 }

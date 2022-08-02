@@ -13,7 +13,7 @@ sealed class BookUiModel {
         val image: String?,
         val discount: String?,
         val publisher: String?,
-        val pubdate: String?,
+        val pubdate: String,
         val description: String?
     ) : Parcelable, BookUiModel() {
         override fun equals(other: Any?): Boolean {
@@ -33,10 +33,26 @@ sealed class BookUiModel {
 
             return true
         }
+
+        override fun hashCode(): Int {
+            var result = isbn.hashCode()
+            result = 31 * result + title.hashCode()
+            result = 31 * result + author.hashCode()
+            result = 31 * result + (image?.hashCode() ?: 0)
+            result = 31 * result + (discount?.hashCode() ?: 0)
+            result = 31 * result + (publisher?.hashCode() ?: 0)
+            result = 31 * result + (pubdate.hashCode())
+            result = 31 * result + (description?.hashCode() ?: 0)
+            return result
+        }
     }
 
-    data class Header(
+    data class SearchBar(
         val query: String
+    ) : BookUiModel()
+
+    data class DateSeparator(
+        val date: String
     ) : BookUiModel()
 }
 

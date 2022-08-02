@@ -4,35 +4,33 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="50dp"
     android:layout_marginTop="16dp"
-    android:background="@drawable/round_16_squre_39e75f"
-    android:padding="16dp"
     >
 
     <TextView
-        android:id="@+id/title"
+        android:id="@+id/date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
         android:textColor="@color/black"
-        android:textSize="20dp"
+        android:textSize="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="책 이름"
+        tools:text="2022년"
         />
 
     <TextView
-        android:id="@+id/author"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:gravity="center_vertical"
-        android:textColor="@color/black"
-        android:textSize="20dp"
+        android:id="@+id/divier"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginStart="8dp"
+        android:background="#eae9ee"
+        android:paddingHorizontal="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title"
-        tools:text="한동욱 지음"
+        app:layout_constraintStart_toEndOf="@+id/date"
+        app:layout_constraintTop_toTopOf="parent"
         />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
