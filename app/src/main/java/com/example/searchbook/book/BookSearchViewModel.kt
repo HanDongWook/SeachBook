@@ -14,6 +14,7 @@ internal class BookSearchViewModel(
 ) : ViewModel() {
     sealed class Navigate {
         data class BookDetail(val book: BookUiModel.Book) : Navigate()
+        object MyFavorite : Navigate()
     }
 
     private val searchBookQuery = MutableLiveData<String>()
@@ -32,6 +33,10 @@ internal class BookSearchViewModel(
         if (searchBookQuery.value != query) {
             searchBookQuery.postValue(query)
         }
+    }
+
+    fun goMyFavorite() {
+        navigate.value = Navigate.MyFavorite
     }
 
     fun onBookClick(book: BookUiModel.Book) {

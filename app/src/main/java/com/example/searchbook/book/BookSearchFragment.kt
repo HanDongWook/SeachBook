@@ -55,12 +55,23 @@ class BookSearchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModule()
+        viewModelModule()
+    }
+
+    private fun viewModule() {
         binding.rvBookList.apply {
             adapter = pagingAdatper
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         }
 
+        binding.myFavorite.setOnClickListener {
+            vm.goMyFavorite()
+        }
+    }
+
+    private fun viewModelModule() {
         vm.pagingList.observe(viewLifecycleOwner) { pagingData ->
             Log.d("test", "BookSearchFragment pagingdata : $pagingData ")
             pagingAdatper.submitData(viewLifecycleOwner.lifecycle, pagingData)
@@ -71,6 +82,11 @@ class BookSearchFragment : Fragment() {
                 is BookSearchViewModel.Navigate.BookDetail -> {
                     val action =
                         BookSearchFragmentDirections.actionBookSearchFragmentToBookDetailFragment(it.book)
+                    findNavController().navigate(action)
+                }
+                is BookSearchViewModel.Navigate.MyFavorite -> {
+                    val action =
+                        BookSearchFragmentDirections.actionBookSearchFragmentToBookMarkingBookFragment()
                     findNavController().navigate(action)
                 }
             }

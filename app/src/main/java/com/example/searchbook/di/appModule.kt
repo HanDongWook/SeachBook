@@ -2,6 +2,7 @@ package com.example.searchbook.di
 
 import com.example.searchbook.api.ApiProvider
 import com.example.searchbook.book.BookDetailViewModel
+import com.example.searchbook.book.BookMarkingBookViewModel
 import com.example.searchbook.book.BookSearchViewModel
 import com.example.searchbook.domain.BookUiModel
 import com.example.searchbook.domain.GetBookDetailUseCase
@@ -18,5 +19,6 @@ val appModule = module {
     single { GetBookPagingListUseCase(get()) }
 
     viewModel { BookSearchViewModel(get()) }
+    viewModel { BookMarkingBookViewModel() }
     viewModel { (book: BookUiModel.Book) -> BookDetailViewModel(book, get()) }
 }

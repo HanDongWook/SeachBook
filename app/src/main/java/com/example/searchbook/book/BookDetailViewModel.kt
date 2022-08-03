@@ -5,13 +5,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asFlow
 import com.example.searchbook.domain.BookUiModel
 import com.example.searchbook.domain.GetBookDetailUseCase
+import com.example.searchbook.utils.SingleLiveEvent
 
 internal class BookDetailViewModel(
     val book: BookUiModel.Book,
     val getBookDetailUseCase: GetBookDetailUseCase
 ) : ViewModel() {
+    sealed class Navigate {
+        object Back : Navigate()
+    }
+
     private val _bookDetail = MutableLiveData<BookUiModel.Book>()
     val bookDetail = _bookDetail.asFlow()
+
+    val navigate = SingleLiveEvent<Navigate>()
 
     init {
         _bookDetail.value = book
@@ -24,5 +31,9 @@ internal class BookDetailViewModel(
 //                Log.d("test", "e : $e")
 //            }
 //        }
+    }
+
+    fun onClickFavorite() {
+
     }
 }
