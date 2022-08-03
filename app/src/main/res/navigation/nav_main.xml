@@ -47,5 +47,10 @@
         android:id="@+id/bookMarkingBookFragment"
         android:name="com.example.searchbook.book.BookMarkingBookFragment"
         android:label="BookMarkingBookFragment"
-        />
+        >
+        <action
+            android:id="@+id/action_bookMarkingBookFragment_to_bookDetailFragment"
+            app:destination="@id/bookDetailFragment"
+            />
+    </fragment>
 </navigation>
