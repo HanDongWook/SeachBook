@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.searchbook.api.BookAPI
-import com.example.searchbook.api.BookResponse
 import com.example.searchbook.domain.BookUiModel
 import retrofit2.HttpException
 import java.io.IOException
@@ -36,7 +35,7 @@ internal class BookSearchPagingSource(
             val response = bookAPI.getBookList(query = query, start = start, sort = "date")
             Log.d("test", "start : $start success response : ${response.list.size}")
             val bookList: List<BookUiModel> =
-                response.list.map { BookResponse.of(it) }.addDateSeparator()
+                response.list.map { BookUiModel.Book.of(it) }.addDateSeparator()
             val newList = if (start == 1) list.plus(bookList) else bookList
 
             val nextKey =

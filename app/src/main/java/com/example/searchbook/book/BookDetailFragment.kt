@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -54,6 +56,18 @@ class BookDetailFragment : Fragment() {
     }
 
     private fun viewModelModule() {
+        vm.isMyFavorite.observe(viewLifecycleOwner) {
+            if (it) {
+                binding.btnFavorite.setImageDrawable(
+                    ResourcesCompat.getDrawable(resources, R.drawable.ic_star_black, null)
+                )
+            } else {
+                binding.btnFavorite.setImageDrawable(
+                    ResourcesCompat.getDrawable(resources, R.drawable.ic_star_outline_black, null)
+                )
+            }
+        }
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 vm.bookDetail.collectLatest {
@@ -61,15 +75,13 @@ class BookDetailFragment : Fragment() {
                         isbn.text = resources.getString(R.string.isbn, it.isbn.toString())
                         title.text = resources.getString(R.string.title, it.title)
                         author.text = resources.getString(R.string.author, it.author)
+                        pubDate.text = resources.getString(R.string.pubdate, it.pubdate)
 
                         if (it.discount == null) priceDiscount.visibility = View.GONE
                         else priceDiscount.text = resources.getString(R.string.price, it.discount)
 
                         if (it.publisher == null) publisher.visibility = View.GONE
                         else publisher.text = resources.getString(R.string.publisher, it.publisher)
-
-                        if (it.pubdate == null) pubDate.visibility = View.GONE
-                        else pubDate.text = resources.getString(R.string.pubdate, it.pubdate)
 
                         if (it.description == null) description.visibility = View.GONE
                         else description.text = it.description
@@ -79,6 +91,10 @@ class BookDetailFragment : Fragment() {
                     }
                 }
             }
+        }
+
+        vm.snackBar.observe(viewLifecycleOwner) {
+            Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
         }
     }
 
