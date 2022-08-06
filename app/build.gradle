@@ -19,19 +19,46 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    flavorDimensions "default"
+    productFlavors {
+        global {
+            applicationId "gb.searchbook"
+        }
+
+        china {
+            applicationId "cn.searchbook"
+        }
+    }
+
     buildTypes {
+        debug {
+            debuggable true
+            applicationIdSuffix ".debug"
+        }
+
+        staging {
+            initWith debug
+            manifestPlaceholders = [hostName: "internal.example.com"]
+            applicationIdSuffix ".staging"
+        }
+
         release {
-            minifyEnabled false
+            debuggable false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
     viewBinding {
         enabled = true
     }
