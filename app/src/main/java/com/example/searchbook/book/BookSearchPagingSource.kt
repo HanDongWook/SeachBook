@@ -1,6 +1,5 @@
 package com.example.searchbook.book
 
-import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.searchbook.api.BookAPI
@@ -12,19 +11,20 @@ internal class BookSearchPagingSource(
     private val bookAPI: BookAPI,
     private val query: String
 ) : PagingSource<Int, BookUiModel>() {
-    private var start = START_ITEM_INDEX
-
     companion object {
         private const val START_ITEM_INDEX = 1
         private const val MAX_ITEM_INDEX = 991
     }
 
+    private var start = START_ITEM_INDEX
+    private var yLatest = ""
+
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, BookUiModel> {
         return try {
-            val list: List<BookUiModel> = listOf<BookUiModel>().addSearchBar(query)
+            val searchBar: List<BookUiModel> = listOf<BookUiModel>().addSearchBar(query)
             if (query.isBlank()) {
                 return LoadResult.Page(
-                    data = list,
+                    data = searchBar,
                     prevKey = null,
                     nextKey = null
                 )
@@ -33,10 +33,18 @@ internal class BookSearchPagingSource(
             start = params.key ?: START_ITEM_INDEX
 
             val response = bookAPI.getBookList(query = query, start = start, sort = "date")
-            Log.d("test", "start : $start success response : ${response.list.size}")
+
+            if (response.list.isEmpty()) {
+                return LoadResult.Page(
+                    data = searchBar,
+                    prevKey = null,
+                    nextKey = null
+                )
+            }
+
             val bookList: List<BookUiModel> =
                 response.list.map { BookUiModel.Book.of(it) }.addDateSeparator()
-            val newList = if (start == 1) list.plus(bookList) else bookList
+            val newList = if (start == 1) searchBar.plus(bookList) else bookList
 
             val nextKey =
                 if ((start + response.list.size) < MAX_ITEM_INDEX) start + response.list.size else MAX_ITEM_INDEX
@@ -64,7 +72,6 @@ internal class BookSearchPagingSource(
 
     private fun List<BookUiModel>.addDateSeparator(): List<BookUiModel> {
         val newList = mutableListOf<BookUiModel>()
-        var yLatest = ""
         this.forEach {
             val yCurrent = (it as BookUiModel.Book).pubdate.substring(0 until 4)
             if (yLatest != yCurrent) {

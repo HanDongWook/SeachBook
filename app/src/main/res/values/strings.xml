@@ -9,4 +9,7 @@
     <string name="price">가격: %s원</string>
     <string name="publisher">출판사: %s</string>
     <string name="pubdate">출판일: %s</string>
+    <string name="book_list">Book List</string>
+    <string name="my_favorites">My Favorites</string>
+    <string name="no_results">No Results</string>
 </resources>

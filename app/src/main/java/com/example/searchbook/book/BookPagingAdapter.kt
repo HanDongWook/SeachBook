@@ -38,6 +38,10 @@ internal class BookPagingAdapter(
         const val VIEW_TYPE_DATE_SEPARATOR = 2
     }
 
+    fun isQueryEmpty(): Boolean {
+        return (getItem(0) as BookUiModel.SearchBar).query.isEmpty()
+    }
+
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
             is BookUiModel.SearchBar -> VIEW_TYPE_SEARCH_BAR
@@ -98,8 +102,21 @@ class BookSearchBarVH(
             addTextChangedListener(
                 object : TextWatcher {
                     private var timer: Timer? = null
-                    override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
-                    override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+                    override fun onTextChanged(
+                        s: CharSequence,
+                        start: Int,
+                        before: Int,
+                        count: Int
+                    ) {
+                    }
+
+                    override fun beforeTextChanged(
+                        s: CharSequence,
+                        start: Int,
+                        count: Int,
+                        after: Int
+                    ) {
+                    }
 
                     private val DELAY: Long = 1000 // Milliseconds
                     override fun afterTextChanged(s: Editable) {
