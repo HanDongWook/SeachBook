@@ -7,11 +7,11 @@ import com.example.searchbook.utils.SingleLiveEvent
 import kotlinx.coroutines.launch
 
 internal class BookDetailViewModel(
-    val book: BookUiModel.Book,
-    val getBookDetailUseCase: GetBookDetailUseCase,
-    val getBookByIsbnUseCase: GetBookByIsbnUseCase,
-    val insertFavoriteBookUseCase: InsertFavoriteBookUseCase,
-    val deleteFavoriteBookUseCase: DeleteFavoriteBookUseCase
+    private val book: BookUiModel.Book,
+    private val getBookDetailUseCase: GetBookDetailUseCase,
+    private val getBookByIsbnUseCase: GetBookByIsbnUseCase,
+    private val insertFavoriteBookUseCase: InsertFavoriteBookUseCase,
+    private val deleteFavoriteBookUseCase: DeleteFavoriteBookUseCase
 ) : ViewModel() {
     private val _bookDetail = MutableLiveData<BookUiModel.Book>()
     val bookDetail = _bookDetail.asFlow()

@@ -38,6 +38,17 @@ class BookSearchFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        _binding = FragmentBookSearchBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModule()
+        viewModelModule()
+    }
+
+    private fun viewModule() {
         pagingAdatper.addLoadStateListener { combinedLoadStates ->
             with(binding) {
                 progressCircular.isVisible = combinedLoadStates.source.refresh is LoadState.Loading
@@ -56,17 +67,6 @@ class BookSearchFragment : Fragment() {
             }
         }
 
-        _binding = FragmentBookSearchBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        viewModule()
-        viewModelModule()
-    }
-
-    private fun viewModule() {
         binding.rvBookList.apply {
             adapter = pagingAdatper
             layoutManager =

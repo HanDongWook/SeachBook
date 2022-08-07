@@ -10,7 +10,7 @@ import com.example.searchbook.utils.SingleLiveEvent
 import kotlinx.coroutines.launch
 
 internal class BookMarkingBookViewModel(
-    val getFavoriteBookListUseCase: GetFavoriteBookListUseCase
+    private val getFavoriteBookListUseCase: GetFavoriteBookListUseCase
 ) : ViewModel() {
 
     sealed class Navigate {

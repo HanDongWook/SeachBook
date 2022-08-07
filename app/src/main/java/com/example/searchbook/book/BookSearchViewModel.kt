@@ -10,7 +10,7 @@ import com.example.searchbook.domain.GetBookPagingListUseCase
 import com.example.searchbook.utils.SingleLiveEvent
 
 internal class BookSearchViewModel(
-    val getBookPagingListUseCase: GetBookPagingListUseCase,
+    private val getBookPagingListUseCase: GetBookPagingListUseCase,
 ) : ViewModel() {
     sealed class Navigate {
         data class BookDetail(val book: BookUiModel.Book) : Navigate()
