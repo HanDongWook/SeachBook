@@ -21,10 +21,9 @@ internal class BookSearchPagingSource(
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, BookUiModel> {
         return try {
-            val searchBar: List<BookUiModel> = listOf<BookUiModel>().addSearchBar(query)
             if (query.isBlank()) {
                 return LoadResult.Page(
-                    data = searchBar,
+                    data = emptyList(),
                     prevKey = null,
                     nextKey = null
                 )
@@ -33,10 +32,10 @@ internal class BookSearchPagingSource(
             start = params.key ?: START_ITEM_INDEX
 
             val response = bookAPI.getBookList(query = query, start = start, sort = "date")
-
+            val list: List<BookUiModel> = listOf<BookUiModel>()
             if (response.list.isEmpty()) {
                 return LoadResult.Page(
-                    data = searchBar,
+                    data = list,
                     prevKey = null,
                     nextKey = null
                 )
@@ -44,7 +43,7 @@ internal class BookSearchPagingSource(
 
             val bookList: List<BookUiModel> =
                 response.list.map { BookUiModel.Book.of(it) }.addDateSeparator()
-            val newList = if (start == 1) searchBar.plus(bookList) else bookList
+            val newList = if (start == 1) list.plus(bookList) else bookList
 
             val nextKey =
                 if ((start + response.list.size) < MAX_ITEM_INDEX) start + response.list.size else MAX_ITEM_INDEX
@@ -64,10 +63,6 @@ internal class BookSearchPagingSource(
     override fun getRefreshKey(state: PagingState<Int, BookUiModel>): Int? {
 //        return state.anchorPosition?.let { state.closestItemToPosition(it)?.isbn }
         return null
-    }
-
-    private fun List<BookUiModel>.addSearchBar(query: String): List<BookUiModel> {
-        return this.plus(BookUiModel.SearchBar(query))
     }
 
     private fun List<BookUiModel>.addDateSeparator(): List<BookUiModel> {

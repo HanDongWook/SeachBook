@@ -2,7 +2,6 @@ package com.example.searchbook.book
 
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,14 +20,8 @@ internal class BookPagingAdapter(
     private val listener: SearchBookListener
 ) : PagingDataAdapter<BookUiModel, BookVH>(object : DiffUtil.ItemCallback<BookUiModel>() {
     override fun areItemsTheSame(oldItem: BookUiModel, newItem: BookUiModel): Boolean {
-        if (oldItem is BookUiModel.SearchBar && newItem is BookUiModel.SearchBar) {
-            Log.d("test", "BookUiModel.SearchBar oldItem : $oldItem newItem : $newItem")
-            return true
-        }
-        else if (oldItem is BookUiModel.Book && newItem is BookUiModel.Book) {
-            Log.d("test", "BookUiModel.Book oldItem : $oldItem newItem : $newItem")
-            return oldItem.isbn == newItem.isbn
-        }
+        if (oldItem is BookUiModel.SearchBar && newItem is BookUiModel.SearchBar) return true
+        else if (oldItem is BookUiModel.Book && newItem is BookUiModel.Book) return oldItem.isbn == newItem.isbn
         else {
             return oldItem == newItem
         }

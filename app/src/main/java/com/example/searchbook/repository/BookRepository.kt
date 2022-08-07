@@ -1,8 +1,10 @@
 package com.example.searchbook.repository
 
-import android.util.Log
+import androidx.lifecycle.map
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
+import androidx.paging.insertHeaderItem
+import androidx.paging.liveData
 import com.example.searchbook.Application
 import com.example.searchbook.api.ApiProvider
 import com.example.searchbook.api.BookAPI
@@ -32,17 +34,14 @@ internal class BookRepository(
     }
 
     suspend fun insertFavoriteBook(book: BookUiModel.Book) = withContext(Dispatchers.IO) {
-        Log.d("test", "insertFavoriteBook book $book")
         appDb.bookDao().insertBook(BookEntity.of(book))
     }
 
     suspend fun deleteFavoriteList(isbn: String) = withContext(Dispatchers.IO) {
-        Log.d("test", "deleteFavoriteList isbn : $isbn")
         appDb.bookDao().deleteByISBN(isbn)
     }
 
     suspend fun getBookByIsbn(isbn: String): BookUiModel.Book? = withContext(Dispatchers.IO) {
-        Log.d("test", "getBookByIsbn isbn : $isbn")
         val book = appDb.bookDao().getByISBN(isbn)
         if (book == null) {
             return@withContext null
@@ -53,10 +52,9 @@ internal class BookRepository(
 
     suspend fun getFavoriteList(): List<BookUiModel.Book> = withContext(Dispatchers.IO) {
         val bookList = appDb.bookDao().getAll()
-        Log.d("test", "getFavoriteList bookList : $bookList")
         return@withContext bookList.map {
-                BookUiModel.Book.of(it)
-            }
+            BookUiModel.Book.of(it)
+        }
     }
 
     fun getBookPagingList(query: String) =
@@ -64,7 +62,10 @@ internal class BookRepository(
             config = PagingConfig(
                 pageSize = NETWORK_PAGE_SIZE
             )
-        ) { BookSearchPagingSource(bookApi, query) }
+        ) { BookSearchPagingSource(bookApi, query) }.liveData
+            .map {
+                it.insertHeaderItem(item = BookUiModel.SearchBar(query))
+            }
 
     suspend fun getBookDetail(isbn: String): BookDetail = withContext(Dispatchers.IO) {
         val d_isbn = URLEncoder.encode(isbn, "UTF-8")
