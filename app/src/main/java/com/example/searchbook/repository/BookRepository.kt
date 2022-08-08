@@ -4,6 +4,7 @@ import androidx.lifecycle.map
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.insertHeaderItem
+import androidx.paging.insertSeparators
 import androidx.paging.liveData
 import com.example.searchbook.Application
 import com.example.searchbook.api.ApiProvider
@@ -65,6 +66,19 @@ internal class BookRepository(
         ) { BookSearchPagingSource(bookApi, query) }.liveData
             .map {
                 it.insertHeaderItem(item = BookUiModel.SearchBar(query))
+            }.map {
+                it.insertSeparators { before: BookUiModel?, after: BookUiModel? ->
+                    if (before is BookUiModel.SearchBar && after != null) {
+                        val year = (after as BookUiModel.Book).pubdate.substring(0 until 4)
+                        BookUiModel.DateSeparator(year)
+                    } else if (before is BookUiModel.Book && after != null) {
+                        val beforeYear = before.pubdate.substring(0 until 4)
+                        val afterYear = (after as BookUiModel.Book).pubdate.substring(0 until 4)
+                        if (beforeYear != afterYear) {
+                            BookUiModel.DateSeparator(afterYear)
+                        } else null
+                    } else null
+                }
             }
 
     suspend fun getBookDetail(isbn: String): BookDetail = withContext(Dispatchers.IO) {

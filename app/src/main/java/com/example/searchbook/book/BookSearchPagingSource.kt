@@ -41,8 +41,7 @@ internal class BookSearchPagingSource(
                 )
             }
 
-            val bookList: List<BookUiModel> =
-                response.list.map { BookUiModel.Book.of(it) }.addDateSeparator()
+            val bookList: List<BookUiModel> = response.list.map { BookUiModel.Book.of(it) }
             val newList = if (start == 1) list.plus(bookList) else bookList
 
             val nextKey =
@@ -63,18 +62,5 @@ internal class BookSearchPagingSource(
     override fun getRefreshKey(state: PagingState<Int, BookUiModel>): Int? {
 //        return state.anchorPosition?.let { state.closestItemToPosition(it)?.isbn }
         return null
-    }
-
-    private fun List<BookUiModel>.addDateSeparator(): List<BookUiModel> {
-        val newList = mutableListOf<BookUiModel>()
-        this.forEach {
-            val yCurrent = (it as BookUiModel.Book).pubdate.substring(0 until 4)
-            if (yLatest != yCurrent) {
-                newList.add(BookUiModel.DateSeparator(yCurrent))
-                yLatest = yCurrent
-            }
-            newList.add(it)
-        }
-        return newList
     }
 }
