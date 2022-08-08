@@ -26,13 +26,17 @@ internal class BookSearchViewModel(
     }
 
     init {
-        searchBook("")
+        init()
     }
 
     fun searchBook(query: String) {
         if (searchBookQuery.value != query) {
             searchBookQuery.postValue(query)
         }
+    }
+
+    fun init() {
+        searchBook("")
     }
 
     fun goMyFavorite() {

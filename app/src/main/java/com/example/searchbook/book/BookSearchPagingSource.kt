@@ -17,7 +17,6 @@ internal class BookSearchPagingSource(
     }
 
     private var start = START_ITEM_INDEX
-    private var yLatest = ""
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, BookUiModel> {
         return try {

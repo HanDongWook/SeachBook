@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -55,6 +56,10 @@ class BookSearchFragment : Fragment() {
 
                 rvBookList.isVisible = combinedLoadStates.source.refresh is LoadState.NotLoading
 
+                if (combinedLoadStates.source.refresh is LoadState.Error) {
+                    showErrorDialog()
+                }
+
                 if (combinedLoadStates.source.refresh is LoadState.NotLoading
                     && combinedLoadStates.append.endOfPaginationReached
                     && pagingAdatper.itemCount < 2
@@ -98,6 +103,18 @@ class BookSearchFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun showErrorDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Error")
+            .setMessage("Error occurred")
+            .setPositiveButton("retry"
+            ) { dialog, _ ->
+                dialog.dismiss()
+                vm.init()
+            }
+            .show()
     }
 
     override fun onDestroyView() {
